@@ -10,6 +10,7 @@ require("./config/db");
 
 // Routes
 const departmentRoutes = require("./routes/departmentRoutes");
+const designationRoutes = require("./routes/designationRoutes");
 
 // Middlewares
 app.use(cors());
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/departments", departmentRoutes);
+app.use("/api/designations", designationRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
