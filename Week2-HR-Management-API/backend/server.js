@@ -13,6 +13,7 @@ const departmentRoutes = require("./routes/departmentRoutes");
 const designationRoutes = require("./routes/designationRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+const leaveRoutes=require("./routes/leaveRoutes");
 
 // Middlewares
 app.use(cors());
@@ -23,6 +24,7 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/designations", designationRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/leaves",leaveRoutes);
 // Home Route
 app.get("/", (req, res) => {
     res.send("HR Management API Running...");
