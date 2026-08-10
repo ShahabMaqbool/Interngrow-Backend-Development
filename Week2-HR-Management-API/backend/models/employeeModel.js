@@ -54,11 +54,16 @@ const createEmployee = async (
 // Get all employees
 
 // Get employees
+// Get employees
 const getEmployees = async (
     search = "",
     department_id = "",
-    designation_id = ""
+    designation_id = "",
+    page = 1,
+    limit = 5
 ) => {
+
+    const offset = (page - 1) * limit;
 
     let query = `
         SELECT
@@ -89,7 +94,7 @@ const getEmployees = async (
     const values = [];
     let count = 1;
 
-    // Search filter
+    // Search
     if (search) {
 
         query += `
@@ -128,8 +133,13 @@ const getEmployees = async (
     }
 
     query += `
-        ORDER BY e.id;
+        ORDER BY e.id
+        LIMIT $${count}
+        OFFSET $${count + 1};
     `;
+
+    values.push(limit);
+    values.push(offset);
 
     const result = await pool.query(query, values);
 

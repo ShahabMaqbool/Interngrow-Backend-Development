@@ -76,28 +76,38 @@ const addEmployee = async (req, res) => {
 
 // Get all employees
 
-const getAllEmployees=async  (req,res)=>{
+// Get employees
+const getAllEmployees = async (req, res) => {
+
     try {
 
         const {
-            search="",
-            department_id="",
-            designation_id=""
-        }=req.query;
+            search = "",
+            department_id = "",
+            designation_id = "",
+            page = 1,
+            limit = 5
+        } = req.query;
 
-        const employees=await getEmployees(
+        const currentPage = Math.max(parseInt(page) || 1, 1);
+        const pageLimit = Math.max(parseInt(limit) || 5, 1);
+
+        const employees = await getEmployees(
             search,
             department_id,
-            designation_id
+            designation_id,
+            currentPage,
+            pageLimit
         );
 
         return res.status(200).json({
             success: true,
+            page: currentPage,
+            limit: pageLimit,
             employees
         });
 
-    }
-    catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -106,9 +116,8 @@ const getAllEmployees=async  (req,res)=>{
             message: "Internal Server Error"
         });
 
-
-
     }
+
 };
 
 
