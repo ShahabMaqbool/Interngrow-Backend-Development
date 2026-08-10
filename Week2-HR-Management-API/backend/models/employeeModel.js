@@ -53,9 +53,14 @@ const createEmployee = async (
 
 // Get all employees
 
-const getEmployees = async (search = "") => {
+// Get employees
+const getEmployees = async (
+    search = "",
+    department_id = "",
+    designation_id = ""
+) => {
 
-    const query = `
+    let query = `
         SELECT
             e.id,
             e.employee_code,
@@ -69,6 +74,7 @@ const getEmployees = async (search = "") => {
             d.department_name,
             des.designation_name,
             e.created_at
+
         FROM employees e
 
         LEFT JOIN departments d
@@ -77,16 +83,55 @@ const getEmployees = async (search = "") => {
         LEFT JOIN designations des
             ON e.designation_id = des.id
 
-        WHERE
-            e.employee_code ILIKE $1
-            OR e.first_name ILIKE $1
-            OR e.last_name ILIKE $1
-            OR e.email ILIKE $1
+        WHERE 1=1
+    `;
 
+    const values = [];
+    let count = 1;
+
+    // Search filter
+    if (search) {
+
+        query += `
+            AND (
+                e.employee_code ILIKE $${count}
+                OR e.first_name ILIKE $${count}
+                OR e.last_name ILIKE $${count}
+                OR e.email ILIKE $${count}
+            )
+        `;
+
+        values.push(`%${search}%`);
+        count++;
+    }
+
+    // Department filter
+    if (department_id) {
+
+        query += `
+            AND e.department_id = $${count}
+        `;
+
+        values.push(department_id);
+        count++;
+    }
+
+    // Designation filter
+    if (designation_id) {
+
+        query += `
+            AND e.designation_id = $${count}
+        `;
+
+        values.push(designation_id);
+        count++;
+    }
+
+    query += `
         ORDER BY e.id;
     `;
 
-    const result = await pool.query(query, [`%${search}%`]);
+    const result = await pool.query(query, values);
 
     return result.rows;
 };
