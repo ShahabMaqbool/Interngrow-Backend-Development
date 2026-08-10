@@ -27,6 +27,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves",leaveRoutes);
 app.use("/api/payroll",payrollRoutes);
+app.use("/uploads", express.static("uploads"));
 
 
 // Home Route

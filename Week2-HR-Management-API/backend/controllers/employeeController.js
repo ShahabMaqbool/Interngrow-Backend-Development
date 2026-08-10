@@ -255,10 +255,72 @@ const removeEmployee = async (req, res) => {
 
 };
 
+const path = require("path");
+const pool = require("../config/db");
+
+// Upload employee image
+const uploadEmployeeImage = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        if (!req.file) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Please upload an image"
+            });
+
+        }
+
+        const imagePath = `/uploads/${req.file.filename}`;
+
+        const result = await pool.query(
+            `
+            UPDATE employees
+            SET profile_image = $1
+            WHERE id = $2
+            RETURNING id, employee_code, first_name, last_name, profile_image
+            `,
+            [imagePath, id]
+        );
+
+        if (result.rows.length === 0) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Employee Not Found"
+            });
+
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile Image Uploaded Successfully",
+            employee: result.rows[0]
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+
+    }
+
+};
+
+
+
 module.exports = {
     addEmployee,
     getAllEmployees,
     getEmployee,
     editEmployee,
-    removeEmployee
+    removeEmployee,
+    uploadEmployeeImage
 };
