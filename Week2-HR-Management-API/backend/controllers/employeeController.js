@@ -6,6 +6,13 @@ const {
     deleteEmployee
 } = require("../models/employeeModel");
 
+const {
+    createAuditLog
+} = require("../models/auditModel");
+
+const pool = require("../config/db");
+
+
 // Create employee
 const addEmployee = async (req, res) => {
 
@@ -55,6 +62,13 @@ const addEmployee = async (req, res) => {
             designation_id
         );
 
+        await createAuditLog(
+            req.user?.id || null,
+            "Created Employee",
+            "employees",
+            employee.id
+        );
+
         return res.status(201).json({
             success: true,
             message: "Employee Created Successfully",
@@ -74,7 +88,6 @@ const addEmployee = async (req, res) => {
 
 };
 
-// Get all employees
 
 // Get employees
 const getAllEmployees = async (req, res) => {
@@ -157,6 +170,7 @@ const getEmployee = async (req, res) => {
 
 };
 
+
 // Update employee
 const editEmployee = async (req, res) => {
 
@@ -200,6 +214,13 @@ const editEmployee = async (req, res) => {
 
         }
 
+        await createAuditLog(
+            req.user?.id || null,
+            "Updated Employee",
+            "employees",
+            employee.id
+        );
+
         return res.status(200).json({
             success: true,
             message: "Employee Updated Successfully",
@@ -219,6 +240,7 @@ const editEmployee = async (req, res) => {
 
 };
 
+
 // Delete employee
 const removeEmployee = async (req, res) => {
 
@@ -236,6 +258,13 @@ const removeEmployee = async (req, res) => {
             });
 
         }
+
+        await createAuditLog(
+            req.user?.id || null,
+            "Deleted Employee",
+            "employees",
+            employee.id
+        );
 
         return res.status(200).json({
             success: true,
@@ -255,8 +284,6 @@ const removeEmployee = async (req, res) => {
 
 };
 
-const path = require("path");
-const pool = require("../config/db");
 
 // Upload employee image
 const uploadEmployeeImage = async (req, res) => {
@@ -281,7 +308,12 @@ const uploadEmployeeImage = async (req, res) => {
             UPDATE employees
             SET profile_image = $1
             WHERE id = $2
-            RETURNING id, employee_code, first_name, last_name, profile_image
+            RETURNING
+                id,
+                employee_code,
+                first_name,
+                last_name,
+                profile_image
             `,
             [imagePath, id]
         );
@@ -313,7 +345,6 @@ const uploadEmployeeImage = async (req, res) => {
     }
 
 };
-
 
 
 module.exports = {
