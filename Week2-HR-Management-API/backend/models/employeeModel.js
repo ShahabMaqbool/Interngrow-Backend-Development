@@ -52,9 +52,10 @@ const createEmployee = async (
 };
 
 // Get all employees
-const getEmployees = async () => {
 
-    const result = await pool.query(`
+const getEmployees = async (search = "") => {
+
+    const query = `
         SELECT
             e.id,
             e.employee_code,
@@ -68,20 +69,26 @@ const getEmployees = async () => {
             d.department_name,
             des.designation_name,
             e.created_at
-
         FROM employees e
 
         LEFT JOIN departments d
-        ON e.department_id=d.id
+            ON e.department_id = d.id
 
         LEFT JOIN designations des
-        ON e.designation_id=des.id
+            ON e.designation_id = des.id
+
+        WHERE
+            e.employee_code ILIKE $1
+            OR e.first_name ILIKE $1
+            OR e.last_name ILIKE $1
+            OR e.email ILIKE $1
 
         ORDER BY e.id;
-    `);
+    `;
+
+    const result = await pool.query(query, [`%${search}%`]);
 
     return result.rows;
-
 };
 
 // Get employee by id

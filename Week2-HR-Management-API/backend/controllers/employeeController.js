@@ -75,11 +75,14 @@ const addEmployee = async (req, res) => {
 };
 
 // Get all employees
+// Get employees
 const getAllEmployees = async (req, res) => {
 
     try {
 
-        const employees = await getEmployees();
+        const { search = "" } = req.query;
+
+        const employees = await getEmployees(search);
 
         return res.status(200).json({
             success: true,
@@ -96,8 +99,8 @@ const getAllEmployees = async (req, res) => {
         });
 
     }
-
 };
+
 
 // Get employee by id
 const getEmployee = async (req, res) => {
