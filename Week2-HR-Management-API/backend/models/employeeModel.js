@@ -89,6 +89,7 @@ const getEmployees = async (
             ON e.designation_id = des.id
 
         WHERE 1=1
+        AND e.deleted_at is Null
     `;
 
     const values = [];
@@ -174,6 +175,7 @@ const getEmployeeById = async (id) => {
         ON e.designation_id=des.id
 
         WHERE e.id=$1;
+        AND e.deleted_at IS NULL
         `,
         [id]
     );
@@ -238,19 +240,21 @@ const updateEmployee = async (
 };
 
 // Delete employee
+// Soft delete employee
 const deleteEmployee = async (id) => {
 
     const result = await pool.query(
         `
-        DELETE FROM employees
-        WHERE id=$1
+        UPDATE employees
+        SET deleted_at = CURRENT_TIMESTAMP
+        WHERE id = $1
+        AND deleted_at IS NULL
         RETURNING *;
         `,
         [id]
     );
 
     return result.rows[0];
-
 };
 
 module.exports = {
