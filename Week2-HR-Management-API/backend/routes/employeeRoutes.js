@@ -1,5 +1,7 @@
 const express = require("express");
 const multer = require("multer");
+const verifyToken = require("../middleware/authMiddleware");
+const allowRoles = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
@@ -37,31 +39,58 @@ const {
 
 
 // Create employee
-router.post("/", addEmployee);
+router.post(
+    "/",
+    verifyToken,
+    allowRoles("Admin", "HR"),
+    addEmployee
+);
 
 
 // Get all employees
-router.get("/", getAllEmployees);
+router.get(
+    "/",
+    verifyToken,
+    allowRoles("Admin", "HR"),
+    getAllEmployees
+);
 
 
 // Upload profile image
 router.post(
     "/:id/profile-image",
+    verifyToken,
+    allowRoles("Admin", "HR"),
     upload.single("profile_image"),
     uploadEmployeeImage
 );
 
 
 // Get employee by id
-router.get("/:id", getEmployee);
+router.get(
+    "/:id",
+    verifyToken,
+    allowRoles("Admin", "HR"),
+    getEmployee
+);
 
 
 // Update employee
-router.put("/:id", editEmployee);
+router.put(
+    "/:id",
+    verifyToken,
+    allowRoles("Admin", "HR"),
+    editEmployee
+);
 
 
 // Delete employee
-router.delete("/:id", removeEmployee);
+router.delete(
+    "/:id",
+    verifyToken,
+    allowRoles("Admin"),
+    removeEmployee
+);
 
 
 module.exports = router;
