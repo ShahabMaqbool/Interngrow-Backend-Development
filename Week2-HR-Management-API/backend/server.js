@@ -15,6 +15,7 @@ const employeeRoutes = require("./routes/employeeRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const leaveRoutes=require("./routes/leaveRoutes");
 const payrollRoutes=require("./routes/payrollRoutes");
+const employeeExportRoutes=require("./routes/employeeExportRoutes");
 
 // Middlewares
 app.use(cors());
@@ -28,6 +29,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves",leaveRoutes);
 app.use("/api/payroll",payrollRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/export",employeeExportRoutes);
 
 
 // Home Route
