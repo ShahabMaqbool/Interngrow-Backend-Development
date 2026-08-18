@@ -1,4 +1,3 @@
-
 const {
     createProduct,
     getAllProducts,
@@ -6,6 +5,7 @@ const {
     updateProduct,
     deleteProduct
 } = require("../models/productModel");
+
 
 // Create Product
 const addProduct = async (req, res) => {
@@ -17,6 +17,11 @@ const addProduct = async (req, res) => {
             price,
             stock
         } = req.body;
+
+        // Image path
+        const image = req.file
+            ? `/uploads/${req.file.filename}`
+            : null;
 
         if (!category_id) {
             return res.status(400).json({
@@ -58,7 +63,8 @@ const addProduct = async (req, res) => {
             name.trim(),
             description || null,
             price,
-            stock || 0
+            stock || 0,
+            image
         );
 
         res.status(201).json({
@@ -88,11 +94,29 @@ const addProduct = async (req, res) => {
 // Get All Products
 const getProducts = async (req, res) => {
     try {
-        const products = await getAllProducts();
+        const {
+            search,
+            category_id,
+            min_price,
+            max_price,
+            page,
+            limit
+        } = req.query;
+
+        const products = await getAllProducts(
+            search,
+            category_id,
+            min_price,
+            max_price,
+            page,
+            limit
+        );
 
         res.status(200).json({
             success: true,
             count: products.length,
+            page: Number(page) || 1,
+            limit: Number(limit) || 10,
             data: products
         });
 

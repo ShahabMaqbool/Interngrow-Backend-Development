@@ -11,7 +11,10 @@ const {
 
 const router = express.Router();
 
-router.post("/", addProduct);
+const upload = require("../config/upload");
+
+router.post("/", upload.single("image"), addProduct);
+
 router.get("/", getProducts);
 router.get("/:id", getProduct);
 router.put("/:id", editProduct);
