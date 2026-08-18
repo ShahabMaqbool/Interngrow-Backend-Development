@@ -6,6 +6,7 @@ require("./config/db");
 
 const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/customers", customerRoutes);
 
 
 
