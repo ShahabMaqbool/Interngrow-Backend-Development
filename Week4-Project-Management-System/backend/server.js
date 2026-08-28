@@ -11,6 +11,7 @@ const assignmentRoutes = require("./routes/assignmentRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const attachmentRoutes = require("./routes/attachmentRoutes");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/assignments", assignmentRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/activity-logs", activityRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/attachments", attachmentRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({
