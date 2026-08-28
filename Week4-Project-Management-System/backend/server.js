@@ -10,6 +10,7 @@ const taskRoutes = require("./routes/taskRoutes");
 const assignmentRoutes = require("./routes/assignmentRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const activityRoutes = require("./routes/activityRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/activity-logs", activityRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({
