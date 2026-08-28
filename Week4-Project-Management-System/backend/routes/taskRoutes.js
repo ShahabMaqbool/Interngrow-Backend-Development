@@ -6,7 +6,9 @@ const {
     getTasks,
     getTask,
     editTask,
-    removeTask
+    removeTask,
+    getUpcoming,
+    getOverdue
 } = require("../controllers/taskController");
 
 const router = express.Router();
@@ -16,6 +18,12 @@ router.post("/", addTask);
 
 // Get All Tasks
 router.get("/", getTasks);
+
+// Get Upcoming Tasks
+router.get("/upcoming", getUpcoming);
+
+// Get Overdue Tasks
+router.get("/overdue", getOverdue);
 
 // Get Task By ID
 router.get("/:id", getTask);

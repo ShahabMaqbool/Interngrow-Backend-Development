@@ -4,7 +4,9 @@ const {
     getAllTasks,
     getTaskById,
     updateTask,
-    deleteTask
+    deleteTask,
+    getUpcomingTasks,
+    getOverdueTasks
 } = require("../models/taskModel");
 
 // Create Task
@@ -238,10 +240,54 @@ const removeTask = async (req, res) => {
     }
 };
 
+// Get Upcoming Tasks
+const getUpcoming = async (req, res) => {
+    try {
+        const tasks = await getUpcomingTasks();
+
+        res.status(200).json({
+            success: true,
+            count: tasks.length,
+            data: tasks
+        });
+
+    } catch (error) {
+        console.error("Get Upcoming Tasks Error:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+};
+
+// Get Overdue Tasks
+const getOverdue = async (req, res) => {
+    try {
+        const tasks = await getOverdueTasks();
+
+        res.status(200).json({
+            success: true,
+            count: tasks.length,
+            data: tasks
+        });
+
+    } catch (error) {
+        console.error("Get Overdue Tasks Error:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+};
+
 module.exports = {
     addTask,
     getTasks,
     getTask,
     editTask,
-    removeTask
+    removeTask,
+    getUpcoming,
+    getOverdue
 };

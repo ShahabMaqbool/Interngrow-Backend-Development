@@ -136,10 +136,71 @@ const deleteTask = async (id) => {
     return result.rows[0];
 };
 
+// Get Upcoming Tasks
+const getUpcomingTasks = async () => {
+    const result = await pool.query(
+        `SELECT
+            t.id,
+            t.project_id,
+            p.name AS project_name,
+            t.title,
+            t.description,
+            t.status,
+            t.priority,
+            t.due_date,
+            t.created_by,
+            tm.name AS creator_name,
+            t.created_at,
+            t.updated_at
+         FROM tasks t
+         JOIN projects p
+            ON t.project_id = p.id
+         JOIN team_members tm
+            ON t.created_by = tm.id
+         WHERE t.due_date IS NOT NULL
+           AND t.due_date >= CURRENT_DATE
+         ORDER BY t.due_date ASC`
+    );
+
+    return result.rows;
+};
+
+// Get Overdue Tasks
+const getOverdueTasks = async () => {
+    const result = await pool.query(
+        `SELECT
+            t.id,
+            t.project_id,
+            p.name AS project_name,
+            t.title,
+            t.description,
+            t.status,
+            t.priority,
+            t.due_date,
+            t.created_by,
+            tm.name AS creator_name,
+            t.created_at,
+            t.updated_at
+         FROM tasks t
+         JOIN projects p
+            ON t.project_id = p.id
+         JOIN team_members tm
+            ON t.created_by = tm.id
+         WHERE t.due_date IS NOT NULL
+           AND t.due_date < CURRENT_DATE
+           AND t.status != 'Completed'
+         ORDER BY t.due_date ASC`
+    );
+
+    return result.rows;
+};
+
 module.exports = {
     createTask,
     getAllTasks,
     getTaskById,
     updateTask,
-    deleteTask
+    deleteTask,
+    getUpcomingTasks,
+    getOverdueTasks
 };
