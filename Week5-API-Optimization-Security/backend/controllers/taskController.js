@@ -1,4 +1,3 @@
-
 const {
     createTask,
     getAllTasks,
@@ -92,13 +91,18 @@ const addTask = async (req, res) => {
     }
 };
 
-// Get All Tasks
+// Get All Tasks with Pagination
 const getTasks = async (req, res) => {
     try {
-        const tasks = await getAllTasks();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const tasks = await getAllTasks(page, limit);
 
         res.status(200).json({
             success: true,
+            page,
+            limit,
             count: tasks.length,
             data: tasks
         });
