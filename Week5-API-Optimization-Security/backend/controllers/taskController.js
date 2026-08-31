@@ -114,7 +114,7 @@ const getTasks = async (req, res) => {
 };
 
 // Get Task By ID
-const getTask = async (req, res) => {
+const getTask = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -133,12 +133,7 @@ const getTask = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Get Task Error:", error.message);
-
-        res.status(500).json({
-            success: false,
-            message: "Server Error"
-        });
+        next(error);
     }
 };
 

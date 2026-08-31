@@ -7,12 +7,14 @@ require("./config/db");
 const app = express();
 
 const taskRoutes=require("./routes/taskRoutes");
+const errorMiddleware=require("./middleware/errorMiddleware");
 
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/tasks",taskRoutes);
+app.use(errorMiddleware);
 
 
 app.get("/", (req, res) => {
