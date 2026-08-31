@@ -9,10 +9,22 @@ const app = express();
 const taskRoutes=require("./routes/taskRoutes");
 const errorMiddleware=require("./middleware/errorMiddleware");
 const logger=require("./logger");
+const rateLimit=require("express-rate-limit");
 
 
 app.use(cors());
 app.use(express.json());
+
+const limiter=rateLimit({
+    windowMs: 15*60*1000, // 15 minutes
+    max: 100,
+    message: {
+        success: false,
+        message: "Too many requests,please try again later."
+    }
+});
+
+app.use(limiter);
 
 // Request Logging Middleware
 app.use((req,res,next)=>{
