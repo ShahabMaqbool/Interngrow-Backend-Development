@@ -8,13 +8,22 @@ const app = express();
 
 const taskRoutes=require("./routes/taskRoutes");
 const errorMiddleware=require("./middleware/errorMiddleware");
+const logger=require("./logger");
 
 
 app.use(cors());
 app.use(express.json());
 
+// Request Logging Middleware
+app.use((req,res,next)=>{
+    logger.info(`${req.method} ${req.originalUrl}`);
+    next();
+});
+
 app.use("/api/tasks",taskRoutes);
 app.use(errorMiddleware);
+
+
 
 
 app.get("/", (req, res) => {
@@ -27,5 +36,5 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server Running on port ${PORT}`);
+    logger.info(`Server Running on port ${PORT}`);
 });

@@ -1,12 +1,18 @@
-const errorMiddleware = (err, req, res, next) => {
-    console.error("Error:", err.message);
+const logger=require("../logger");
 
-    const statusCode = err.statusCode || 500;
+const errorMiddleware=(err,req,res,next)=>{
 
-    res.status(statusCode).json({
+    logger.error({
+        message: err.message,
+        method: req.method,
+        url: req.originalUrl,
+        stack: err.stack
+    });
+
+    res.status(err.status || 500).json({
         success: false,
-        message: err.message || "Internal Server Error"
+        message: err.message || "Server Error"
     });
 };
 
-module.exports = errorMiddleware;
+module.exports=errorMiddleware;
