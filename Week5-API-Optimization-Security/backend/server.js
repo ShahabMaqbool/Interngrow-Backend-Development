@@ -10,6 +10,7 @@ const taskRoutes=require("./routes/taskRoutes");
 const errorMiddleware=require("./middleware/errorMiddleware");
 const logger=require("./logger");
 const rateLimit=require("express-rate-limit");
+const redisClient=require("./config/redis");
 
 
 app.use(cors());
@@ -47,6 +48,16 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    logger.info(`Server Running on port ${PORT}`);
-});
+const startServer = async () => {
+    try {
+        await redisClient.connect();
+
+        app.listen(PORT, () => {
+            console.log(`Server Running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("Server Startup Error:", error.message);
+    }
+};
+
+startServer();

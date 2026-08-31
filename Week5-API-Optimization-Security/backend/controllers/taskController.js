@@ -8,6 +8,8 @@ const {
     getOverdueTasks
 } = require("../models/taskModel");
 
+const redisClient = require("../config/redis");
+
 // Create Task
 const addTask = async (req, res) => {
     try {
@@ -91,29 +93,54 @@ const addTask = async (req, res) => {
     }
 };
 
-// Get All Tasks with Pagination
-const getTasks = async (req, res) => {
+// Get All Tasks with Pagination and Redis Caching
+const getTasks = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
 
+        // Create unique cache key for each page
+        const cacheKey = `tasks:page:${page}:limit:${limit}`;
+
+        // Check Redis cache
+        const cachedTasks = await redisClient.get(cacheKey);
+
+        if (cachedTasks) {
+            console.log("Tasks fetched from Redis cache");
+
+            return res.status(200).json({
+                success: true,
+                page,
+                limit,
+                count: JSON.parse(cachedTasks).length,
+                data: JSON.parse(cachedTasks),
+                source: "cache"
+            });
+        }
+
+        // Fetch from PostgreSQL if cache doesn't exist
         const tasks = await getAllTasks(page, limit);
+
+        // Store result in Redis for 60 seconds
+        await redisClient.setEx(
+            cacheKey,
+            60,
+            JSON.stringify(tasks)
+        );
+
+        console.log("Tasks fetched from PostgreSQL and cached");
 
         res.status(200).json({
             success: true,
             page,
             limit,
             count: tasks.length,
-            data: tasks
+            data: tasks,
+            source: "database"
         });
 
     } catch (error) {
-        console.error("Get Tasks Error:", error.message);
-
-        res.status(500).json({
-            success: false,
-            message: "Server Error"
-        });
+        next(error);
     }
 };
 
