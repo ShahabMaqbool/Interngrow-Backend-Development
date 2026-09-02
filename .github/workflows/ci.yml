@@ -1,0 +1,39 @@
+name: Week 5 CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Week5-API-Optimization-Security/**"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "Week5-API-Optimization-Security/**"
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Week5-API-Optimization-Security/backend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Week5-API-Optimization-Security/backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Check Backend
+        run: node --check server.js
