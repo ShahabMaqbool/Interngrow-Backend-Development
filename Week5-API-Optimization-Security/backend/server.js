@@ -12,6 +12,7 @@ const logger=require("./logger");
 const rateLimit=require("express-rate-limit");
 const redisClient=require("./config/redis");
 const healthRoutes=require("./routes/healthRoutes");
+const metrics=require("./config/metrics");
 
 
 
@@ -38,6 +39,15 @@ app.use((req,res,next)=>{
 
 app.use("/api/tasks",taskRoutes);
 app.use("/", healthRoutes);
+
+app.use("/api/tasks", taskRoutes);
+app.use("/", healthRoutes);
+
+app.get("/metrics", async (req, res) => {
+    res.set("Content-Type", metrics.register.contentType);
+    res.end(await metrics.register.metrics());
+});
+
 app.use(errorMiddleware);
 
 
