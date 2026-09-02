@@ -11,6 +11,9 @@ const errorMiddleware=require("./middleware/errorMiddleware");
 const logger=require("./logger");
 const rateLimit=require("express-rate-limit");
 const redisClient=require("./config/redis");
+const healthRoutes=require("./routes/healthRoutes");
+
+
 
 
 app.use(cors());
@@ -34,6 +37,7 @@ app.use((req,res,next)=>{
 });
 
 app.use("/api/tasks",taskRoutes);
+app.use("/", healthRoutes);
 app.use(errorMiddleware);
 
 
