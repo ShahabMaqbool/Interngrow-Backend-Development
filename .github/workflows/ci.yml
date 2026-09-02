@@ -13,6 +13,8 @@ on:
     paths:
       - "Week5-API-Optimization-Security/**"
 
+  workflow_dispatch:
+
 jobs:
   build-and-check:
     runs-on: ubuntu-latest
