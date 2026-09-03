@@ -32,3 +32,4 @@ router.get("/:id", getNotification);
 router.delete("/:id", removeNotification);
 
 module.exports = router;
+

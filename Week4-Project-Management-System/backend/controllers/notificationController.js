@@ -32,6 +32,10 @@ const addNotification = async (req, res) => {
             type || "General"
         );
 
+        const io = req.app.get("io");
+
+        io.to(`member_${member_id}`).emit("new_notification", notification);
+
         res.status(201).json({
             success: true,
             message: "Notification Created Successfully",
